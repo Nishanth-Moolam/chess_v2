@@ -1,0 +1,9 @@
+<div class="content">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <mat-form-field>
+            <mat-label>Player Name</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+        <button mat-button type="submit">Submit</button>
+    </form>
+</div>
