@@ -25,9 +25,10 @@ export class SocketService {
     console.log('joining lobby');
     this.lobbyId = localStorage.getItem('lobbyId') || '';
     this.socket.emit('join_lobby', this.lobbyId);
-    this.socket.on('lobby_joined', (data: any) => {
-      console.log(data);
-      // get board
+    this.socket.on('joined_lobby', () => {
+      this.http.get(`${this.apiURL}/board/${this.lobbyId}`).subscribe((res) => {
+        console.log(res);
+      });
     });
 
     this.socket.on('lobby_full', (data: any) => {
@@ -35,8 +36,9 @@ export class SocketService {
     });
 
     this.socket.on('moved', (data: any) => {
-      console.log(data);
-      // get board
+      this.http.get(`${this.apiURL}/board/${this.lobbyId}`).subscribe((res) => {
+        console.log(res);
+      });
     });
   }
 
@@ -53,7 +55,13 @@ export class SocketService {
           this.lobbyId = data._id;
           localStorage.setItem('lobbyId', data._id);
           this.router.navigate(['/lobby', this.lobbyId]);
-          // create board
+          this.http
+            .post(`${this.apiURL}/board/create/${this.lobbyId}`, {
+              state: [],
+            })
+            .subscribe((res) => {
+              console.log(res);
+            });
         });
       });
   }
@@ -67,7 +75,7 @@ export class SocketService {
 
   updateBoard(lobbyId: string, state: any) {
     this.http
-      .post(`${this.apiURL}/lobby/update/${lobbyId}`, {
+      .post(`${this.apiURL}/board/update/${lobbyId}`, {
         state: state,
       })
       .subscribe((res) => {
