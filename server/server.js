@@ -79,7 +79,6 @@ io.on("connection", (socket) => {
   socket.on("move", async (data) => {
     console.log("-------------------------------------".yellow.bold);
     console.log("Move");
-    console.log(data);
     if (data.lobbyId) {
       lobbyId = data.lobbyId;
     }
@@ -88,6 +87,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    console.log("-------------------------------------".yellow.bold);
     console.log("Client disconnected");
     // Handle disconnection logic here
   });

@@ -25,7 +25,6 @@ export class HomeComponent implements OnInit {
   onSubmit() {
     const name = this.form.value.name;
     localStorage.setItem('name', name);
-    console.log(name);
     this.socketService.createLobby();
   }
 }

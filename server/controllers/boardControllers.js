@@ -1,14 +1,23 @@
 const Board = require("../models/boardModel");
 const asyncHandler = require("express-async-handler");
 const Lobby = require("../models/lobbyModel");
+const findMoves = require("../scripts/findMoves");
 
 const createBoard = asyncHandler(async (req, res) => {
-  console.log("CreateBoard called");
-
   const lobby = await Lobby.findById(req.params.lobbyId);
 
   const board = new Board({
-    state: req.body.state,
+    // lower case is black, n is knight, k is king, etc.
+    state: [
+      "rnbqkbnr",
+      "pppppppp",
+      "........",
+      "........",
+      "........",
+      "........",
+      "PPPPPPPP",
+      "RNBQKBNR",
+    ],
   });
 
   const createdBoard = await board.save();
@@ -20,8 +29,6 @@ const createBoard = asyncHandler(async (req, res) => {
 });
 
 const updateBoard = asyncHandler(async (req, res) => {
-  console.log("UpdateBoard called");
-
   const lobby = await Lobby.findById(req.params.lobbyId);
   const oldBoard = await Board.findById(lobby.board);
 
@@ -29,6 +36,18 @@ const updateBoard = asyncHandler(async (req, res) => {
     state: req.body.state,
     previousState: oldBoard._id,
   });
+
+  moves = findMoves(req.body.state);
+  console.log("-------------------------------------".yellow.bold);
+  console.log("Moves List");
+  console.log(JSON.stringify(moves.moves, null, 1));
+  console.log("Is Black Check");
+  console.log(moves.isBlackCheck);
+  console.log("Is White Check");
+  console.log(moves.isWhiteCheck);
+
+  console.log("State");
+  console.log(req.body.state);
 
   const createdBoard = await board.save();
 
@@ -39,8 +58,6 @@ const updateBoard = asyncHandler(async (req, res) => {
 });
 
 const getBoard = asyncHandler(async (req, res) => {
-  console.log("GetBoard called");
-
   const lobby = await Lobby.findById(req.params.lobbyId);
   const board = await Board.findById(lobby.board);
 

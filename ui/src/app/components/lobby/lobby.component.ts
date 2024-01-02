@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LobbyComponent implements OnInit {
   lobbyId: string = '';
+  state: any = [];
 
   constructor(
     private socketService: SocketService,
@@ -17,10 +18,13 @@ export class LobbyComponent implements OnInit {
 
   ngOnInit() {
     this.lobbyId = this.route.snapshot.paramMap.get('id') || '';
+    this.socketService.state.subscribe((state: any) => {
+      this.state = state;
+    });
     localStorage.setItem('lobbyId', this.lobbyId);
   }
 
-  move() {
-    this.socketService.move();
+  move(state: any) {
+    this.socketService.move(state);
   }
 }
