@@ -1,7 +1,7 @@
 const Board = require("../models/boardModel");
 const asyncHandler = require("express-async-handler");
 const Lobby = require("../models/lobbyModel");
-const findMoves = require("../scripts/findMoves");
+const BoardState = require("../chess/boardState");
 
 const createBoard = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
@@ -32,22 +32,25 @@ const updateBoard = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
   const oldBoard = await Board.findById(lobby.board);
 
-  const board = new Board({
-    state: req.body.state,
-    previousState: oldBoard._id,
-  });
-
-  moves = findMoves(req.body.state);
+  boardState = new BoardState(req.body.state);
+  moves = boardState.findMoves();
   console.log("-------------------------------------".yellow.bold);
   console.log("Moves List");
-  console.log(JSON.stringify(moves.moves, null, 1));
+  // console.log(JSON.stringify(moves, null, 1));
+  console.log(moves);
   console.log("Is Black Check");
-  console.log(moves.isBlackCheck);
+  console.log(boardState.isCheckString(req.body.state, "black"));
   console.log("Is White Check");
-  console.log(moves.isWhiteCheck);
+  console.log(boardState.isCheckString(req.body.state, "white"));
 
   console.log("State");
   console.log(req.body.state);
+
+  const board = new Board({
+    // TODO: update state
+    state: req.body.state,
+    previousState: oldBoard._id,
+  });
 
   const createdBoard = await board.save();
 

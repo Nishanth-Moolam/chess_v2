@@ -1,3 +1,3 @@
 # chess_v2
 
-test
+a multiplayer chess game application using the MEAN stack and websockets
