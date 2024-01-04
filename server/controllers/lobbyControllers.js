@@ -13,4 +13,22 @@ const createLobby = asyncHandler(async (req, res) => {
   res.status(201).json(createdLobby);
 });
 
-module.exports = { createLobby };
+const joinLobby = asyncHandler(async (req, res) => {
+  const lobby = await Lobby.findById(req.params.lobbyId);
+  let joinedAs = "";
+
+  if (!lobby.white) {
+    joinedAs = "white";
+    lobby.white = req.body.socketId._value;
+  } else {
+    joinedAs = "black";
+    lobby.black = req.body.socketId._value;
+  }
+
+  const updatedLobby = await lobby.save();
+  res.status(201).json({
+    color: joinedAs,
+  });
+});
+
+module.exports = { createLobby, joinLobby };

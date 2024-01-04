@@ -18,6 +18,19 @@ const createBoard = asyncHandler(async (req, res) => {
       "PPPPPPPP",
       "RNBQKBNR",
     ],
+
+    // test state
+    // state: [
+    //   "........",
+    //   "........",
+    //   "........",
+    //   "...n....",
+    //   "........",
+    //   "........",
+    //   "........",
+    //   "........",
+    // ],
+    color: "white",
   });
 
   const createdBoard = await board.save();
@@ -25,31 +38,31 @@ const createBoard = asyncHandler(async (req, res) => {
   lobby.board = createdBoard._id;
   await lobby.save();
 
-  res.status(201).json(createdBoard);
+  const boardState = new BoardState(board.state);
+  const moves = boardState.findMoves();
+
+  res.status(201).json({
+    _id: createdBoard._id,
+    state: createdBoard.state,
+    moves: moves,
+    color: createdBoard.color,
+  });
 });
 
 const updateBoard = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
   const oldBoard = await Board.findById(lobby.board);
-
-  boardState = new BoardState(req.body.state);
-  moves = boardState.findMoves();
+  const move = req.body.move;
   console.log("-------------------------------------".yellow.bold);
-  console.log("Moves List");
-  // console.log(JSON.stringify(moves, null, 1));
-  console.log(moves);
-  console.log("Is Black Check");
-  console.log(boardState.isCheckString(req.body.state, "black"));
-  console.log("Is White Check");
-  console.log(boardState.isCheckString(req.body.state, "white"));
+  console.log("Update board");
+  console.log(move);
 
-  console.log("State");
-  console.log(req.body.state);
+  boardState = new BoardState(oldBoard.state);
 
   const board = new Board({
-    // TODO: update state
-    state: req.body.state,
+    state: boardState.move(move),
     previousState: oldBoard._id,
+    color: oldBoard.color === "white" ? "black" : "white",
   });
 
   const createdBoard = await board.save();
@@ -57,14 +70,31 @@ const updateBoard = asyncHandler(async (req, res) => {
   lobby.board = createdBoard._id;
   await lobby.save();
 
-  res.status(201).json(createdBoard);
+  res.status(201).json({
+    _id: createdBoard._id,
+    state: createdBoard.state,
+    color: createdBoard.color,
+  });
 });
 
 const getBoard = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
   const board = await Board.findById(lobby.board);
 
-  res.status(201).json(board);
+  if (!board) {
+    res.status(404);
+    throw new Error("Board not found");
+  }
+
+  const boardState = new BoardState(board.state);
+  const moves = boardState.findMoves();
+
+  res.status(201).json({
+    _id: board._id,
+    state: board.state,
+    moves: moves,
+    color: board.color,
+  });
 });
 
 module.exports = { createBoard, updateBoard, getBoard };

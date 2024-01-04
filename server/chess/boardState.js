@@ -12,11 +12,15 @@ class BoardState {
   }
 
   findMoves() {
-    // console.log(JSON.stringify(this.findAllMoves(this.state), null, 1));
     const allMoves = this.findAllMoves(this.state);
     const validatedMoves = this.validateMoves(this.state, allMoves);
 
     return validatedMoves;
+  }
+
+  move(move) {
+    this.state = this.propogateMove(this.state, move);
+    return this.getStringState(this.state);
   }
 
   findAllMoves(state) {
@@ -36,7 +40,8 @@ class BoardState {
     let validatedMoves = {};
 
     for (let position in moves) {
-      const [i, j] = JSON.parse(position);
+      let [i, j] = JSON.parse(position);
+      [i, j] = [+i, +j];
       const color = state[i][j].color;
       for (let move of moves[position]) {
         let newState = this.propogateMove(state, move);
@@ -69,7 +74,7 @@ class BoardState {
   }
 
   isCheck(state, color) {
-    let kingPosition = this.findKing(state, color);
+    let kingPosition = JSON.stringify(this.findKing(state, color));
     let dangerSquares = this.findDangerSquares(state, color);
 
     return dangerSquares.has(kingPosition);

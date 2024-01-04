@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.socketService.leaveLobby();
     this.form = this.fb.group({
       name: '',
     });

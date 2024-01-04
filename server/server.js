@@ -60,10 +60,24 @@ io.on("connection", (socket) => {
 
     if (num_clients < 2) {
       socket.join(lobbyId);
-      socket.emit("joined_lobby");
+      socket.lobbyId = lobbyId;
+      socket.emit("joined_lobby", {
+        socketId: socket.id,
+        lobbyId: lobbyId,
+      });
     } else {
       socket.emit("lobby_full");
     }
+  });
+
+  socket.on("leave_lobby", (data) => {
+    console.log("-------------------------------------".yellow.bold);
+    console.log("Leave lobby");
+    console.log(data);
+    lobbyId = data;
+    socket.leave(lobbyId);
+
+    socket.emit("left_lobby", data);
   });
 
   socket.on("create_lobby", (data) => {
@@ -86,9 +100,29 @@ io.on("connection", (socket) => {
     io.to(lobbyId).emit("moved", data);
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", async () => {
     console.log("-------------------------------------".yellow.bold);
     console.log("Client disconnected");
-    // Handle disconnection logic here
+    // Get the lobby ID from the socket object
+    const lobbyId = socket.lobbyId;
+
+    // Find the lobby and remove the client's socket ID
+    try {
+      const lobby = await Lobby.findById(lobbyId);
+      if (!lobby) {
+        return;
+      }
+      if (lobby?.black === socket.id) {
+        lobby.black = null;
+      } else if (lobby?.white === socket.id) {
+        lobby.white = null;
+      }
+
+      await lobby.save();
+      console.log("Removed player: " + socket.id);
+      console.log(lobby);
+    } catch (err) {
+      console.log(err);
+    }
   });
 });

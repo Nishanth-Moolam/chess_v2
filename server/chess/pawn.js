@@ -46,7 +46,7 @@ class Pawn extends Piece {
         ],
       });
     }
-    for (let dj in [-1, 1]) {
+    for (let dj of [-1, 1]) {
       if (j + dj < 0 || j + dj > 7) continue;
       if (
         state[i + direction][j + dj] &&
@@ -54,7 +54,7 @@ class Pawn extends Piece {
       ) {
         moves[JSON.stringify(this.position)].push({
           endPosition: [i + direction, j + dj],
-          capture: state[i + direction][j + dj],
+          capture: [i + direction, j + dj],
           translation: [
             {
               start: this.position,
@@ -74,7 +74,7 @@ class Pawn extends Piece {
 
     let [i, j] = this.position;
     let direction = this.color === "black" ? 1 : -1;
-    for (let dj in [-1, 1]) {
+    for (let dj of [-1, 1]) {
       // convert to int
       [i, j, direction, dj] = [+i, +j, +direction, +dj];
       if (j + dj < 0 || j + dj > 7) continue;

@@ -8,6 +8,7 @@ const boardModel = new mongoose.Schema(
       ref: "Board",
       required: false,
     },
+    color: { type: String, required: false },
     createdAt: { type: Date, default: Date.now, expires: 86400 },
   },
   {

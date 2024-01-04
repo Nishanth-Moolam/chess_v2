@@ -9,6 +9,8 @@ const lobbyModel = new mongoose.Schema(
       ref: "Board",
       required: false,
     },
+    white: { type: String, required: false, trim: true },
+    black: { type: String, required: false, trim: true },
     createdAt: { type: Date, default: Date.now, expires: 86400 },
   },
   {

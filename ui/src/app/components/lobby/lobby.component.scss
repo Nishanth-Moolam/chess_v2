@@ -1,0 +1,55 @@
+.chess-cell {
+    position: relative;
+    padding: 0;
+}
+
+.chess-cell::before {
+    content: "";
+    display: block;
+    padding-top: 100%;  /* This creates a square */
+}
+
+.cell-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.chess-board {
+    padding: 24px;
+
+}
+
+@media (min-width: 992px) { 
+    .chess-board {
+        max-width: 600px; 
+        margin: 0 auto;
+    }
+}
+
+.white {
+    background-color: #f0d9b5;
+}
+
+.black {
+    background-color: #b58863;
+}
+
+.chess-piece {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* This will keep the aspect ratio of the images */
+}
+
+.circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;  /* Adjust these values to change the size of the circle */
+    height: 50%;
+    background-color: #ad4242;  /* Change this to the color you want */
+    border-radius: 50%;  /* This makes the div a circle */
+    transform: translate(-50%, -50%);  /* This centers the circle in the square */
+}

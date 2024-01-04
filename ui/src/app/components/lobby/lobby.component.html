@@ -1,2 +1,22 @@
-<div class="content"><button (click)="move(state)">Move</button></div>
-
+<div class="content" *ngIf="loading === false">
+    <div class="container chess-board">
+        <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">
+            <div 
+            class="col chess-cell" 
+            *ngFor="let j of [0, 1, 2, 3, 4, 5, 6, 7]" 
+            [ngClass]="{'white': (i+j)%2 === 0, 'black': (i+j)%2 === 1}">
+                <div class="cell-content" (click)="displayMoves(i, j)">
+                    <ng-container *ngIf="pieceMoves[i][j]">
+                        <div class="circle"></div>
+                    </ng-container>
+                    <ng-container *ngIf="state[i] && state[i][j] !== '.'">
+                        <img class="chess-piece" src="{{ imageSrc(state[i][j]) }}" alt="piece">
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>you are {{ color }}</p>
+    <p>{{ boardColor }}'s turn</p>
+    <button (click)="leaveGame()">Leave Game</button>
+</div>
