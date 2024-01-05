@@ -1,8 +1,8 @@
 const Piece = require("./piece");
 
 class Bishop extends Piece {
-  constructor(color, position) {
-    super(color, position);
+  constructor(color, position, prestine) {
+    super(color, position, prestine);
     this.type = "bishop";
   }
 

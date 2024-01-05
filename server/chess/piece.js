@@ -1,7 +1,8 @@
 class Piece {
-  constructor(color, position) {
+  constructor(color, position, prestine) {
     this.color = color;
     this.position = position;
+    this.prestine = prestine;
   }
 
   /**

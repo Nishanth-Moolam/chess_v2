@@ -18,18 +18,20 @@ const createBoard = asyncHandler(async (req, res) => {
       "PPPPPPPP",
       "RNBQKBNR",
     ],
-
-    // test state
-    // state: [
-    //   "........",
-    //   "........",
-    //   "........",
-    //   "...n....",
-    //   "........",
-    //   "........",
-    //   "........",
-    //   "........",
-    // ],
+    // for display purposes only. Undo moves by going back to previous state
+    movesHistory: [],
+    // used for castling and en passant
+    prestine: [
+      "00000000",
+      "00000000",
+      "........",
+      "........",
+      "........",
+      "........",
+      "00000000",
+      "00000000",
+    ],
+    // white goes first
     color: "white",
   });
 
@@ -38,7 +40,7 @@ const createBoard = asyncHandler(async (req, res) => {
   lobby.board = createdBoard._id;
   await lobby.save();
 
-  const boardState = new BoardState(board.state);
+  const boardState = new BoardState(board.state, board.prestine);
   const moves = boardState.findMoves();
 
   res.status(201).json({
@@ -57,11 +59,15 @@ const updateBoard = asyncHandler(async (req, res) => {
   console.log("Update board");
   console.log(move);
 
-  boardState = new BoardState(oldBoard.state);
+  boardState = new BoardState(oldBoard.state, oldBoard.prestine);
+
+  const newBoardState = boardState.move(move, req.body.promotionPreference);
 
   const board = new Board({
-    state: boardState.move(move),
+    state: newBoardState.stringState,
     previousState: oldBoard._id,
+    movesHistory: [...oldBoard.movesHistory, move],
+    prestine: newBoardState.prestine,
     color: oldBoard.color === "white" ? "black" : "white",
   });
 
@@ -81,12 +87,13 @@ const getBoard = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
   const board = await Board.findById(lobby.board);
 
-  if (!board) {
-    res.status(404);
-    throw new Error("Board not found");
-  }
+  // this causes errors when board takes too long to find
+  // if (!board) {
+  //   res.status(404);
+  //   throw new Error("Board not found");
+  // }
 
-  const boardState = new BoardState(board.state);
+  const boardState = new BoardState(board.state, board.prestine);
   const moves = boardState.findMoves();
 
   res.status(201).json({

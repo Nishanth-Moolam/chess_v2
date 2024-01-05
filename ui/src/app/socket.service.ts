@@ -10,6 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SocketService {
   lobbyId: string = '';
   apiURL: string = 'http://localhost:5000/api';
+  promotionPreference: string = 'queen';
   color: BehaviorSubject<string> = new BehaviorSubject<string>('');
   state: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   moves: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -92,13 +93,14 @@ export class SocketService {
   }
 
   move(move: any) {
-    this.updateBoard(this.lobbyId, move);
+    this.updateBoard(this.lobbyId, this.promotionPreference, move);
   }
 
-  updateBoard(lobbyId: string, move: any) {
+  updateBoard(lobbyId: string, promotionPreference: string, move: any) {
     this.http
       .post(`${this.apiURL}/board/update/${lobbyId}`, {
         move: move,
+        promotionPreference: promotionPreference,
       })
       .subscribe((res) => {
         console.log(res);

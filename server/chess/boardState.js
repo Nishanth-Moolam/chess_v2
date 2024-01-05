@@ -7,8 +7,9 @@ const Queen = require("./queen");
 const _ = require("lodash");
 
 class BoardState {
-  constructor(stringState) {
-    this.state = this.getState(stringState);
+  constructor(stringState, prestine) {
+    this.state = this.getState(stringState, prestine);
+    this.promotionPreference = "queen";
   }
 
   findMoves() {
@@ -18,8 +19,10 @@ class BoardState {
     return validatedMoves;
   }
 
-  move(move) {
+  move(move, promotionPreference) {
+    this.promotionPreference = promotionPreference;
     this.state = this.propogateMove(this.state, move);
+
     return this.getStringState(this.state);
   }
 
@@ -63,6 +66,10 @@ class BoardState {
       newState[translate.end[0]][translate.end[1]] =
         newState[translate.start[0]][translate.start[1]];
       newState[translate.start[0]][translate.start[1]] = null;
+      newState[translate.end[0]][translate.end[1]].prestine =
+        newState[translate.end[0]][translate.end[1]].prestine < 9
+          ? newState[translate.end[0]][translate.end[1]].prestine + 1
+          : 9;
     }
     // TODO: this breaks if the pawn is promoted and on castling
     return newState;
@@ -114,7 +121,7 @@ class BoardState {
     return dangerSquares;
   }
 
-  getState(stringState) {
+  getState(stringState, prestine) {
     let state = [];
 
     for (let i = 0; i < stringState.length; i++) {
@@ -122,40 +129,40 @@ class BoardState {
       for (let j = 0; j < stringState[i].length; j++) {
         switch (stringState[i][j]) {
           case "p":
-            state[i].push(new Pawn("black", [i, j]));
+            state[i].push(new Pawn("black", [i, j], +prestine[i][j]));
             break;
           case "r":
-            state[i].push(new Rook("black", [i, j]));
+            state[i].push(new Rook("black", [i, j], +prestine[i][j]));
             break;
           case "n":
-            state[i].push(new Knight("black", [i, j]));
+            state[i].push(new Knight("black", [i, j], +prestine[i][j]));
             break;
           case "b":
-            state[i].push(new Bishop("black", [i, j]));
+            state[i].push(new Bishop("black", [i, j], +prestine[i][j]));
             break;
           case "q":
-            state[i].push(new Queen("black", [i, j]));
+            state[i].push(new Queen("black", [i, j], +prestine[i][j]));
             break;
           case "k":
-            state[i].push(new King("black", [i, j]));
+            state[i].push(new King("black", [i, j], +prestine[i][j]));
             break;
           case "P":
-            state[i].push(new Pawn("white", [i, j]));
+            state[i].push(new Pawn("white", [i, j], +prestine[i][j]));
             break;
           case "R":
-            state[i].push(new Rook("white", [i, j]));
+            state[i].push(new Rook("white", [i, j], +prestine[i][j]));
             break;
           case "N":
-            state[i].push(new Knight("white", [i, j]));
+            state[i].push(new Knight("white", [i, j], +prestine[i][j]));
             break;
           case "B":
-            state[i].push(new Bishop("white", [i, j]));
+            state[i].push(new Bishop("white", [i, j], +prestine[i][j]));
             break;
           case "Q":
-            state[i].push(new Queen("white", [i, j]));
+            state[i].push(new Queen("white", [i, j], +prestine[i][j]));
             break;
           case "K":
-            state[i].push(new King("white", [i, j]));
+            state[i].push(new King("white", [i, j], +prestine[i][j]));
             break;
           default:
             state[i].push(null);
@@ -168,13 +175,17 @@ class BoardState {
 
   getStringState(state) {
     let stringState = [];
+    let prestine = [];
 
     for (let i = 0; i < state.length; i++) {
       stringState.push("");
+      prestine.push("");
       for (let j = 0; j < state[i].length; j++) {
         if (state[i][j] === null) {
           stringState[i] += ".";
+          prestine[i] += ".";
         } else {
+          prestine[i] += state[i][j].prestine.toString();
           switch (state[i][j].type) {
             case "pawn":
               stringState[i] += state[i][j].color === "black" ? "p" : "P";
@@ -201,7 +212,7 @@ class BoardState {
         }
       }
     }
-    return stringState;
+    return { stringState: stringState, prestine: prestine };
   }
 }
 
