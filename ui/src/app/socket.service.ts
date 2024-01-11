@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 export class SocketService {
   lobbyId: string = '';
   apiURL: string = 'http://localhost:5000/api';
-  promotionPreference: string = 'queen';
+  promotionPreference: string = 'knight';
   color: BehaviorSubject<string> = new BehaviorSubject<string>('');
   state: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   moves: BehaviorSubject<any> = new BehaviorSubject<any>({});
@@ -125,5 +125,9 @@ export class SocketService {
     this.socketId.next('');
     this.router.navigate(['/']);
     // TODO: reset all BehaviorSubjects
+  }
+
+  setPromotionPreference(preference: string) {
+    this.promotionPreference = preference;
   }
 }

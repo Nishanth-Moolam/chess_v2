@@ -95,32 +95,25 @@ const getBoard = asyncHandler(async (req, res) => {
 
   const boardState = new BoardState(board.state, board.prestine);
   const moves = boardState.findMoves();
-  const isBlackCheck = boardState.isCheckString(
-    board.state,
-    board.prestine,
-    "black"
-  );
+  const { stringState, prestine } = boardState.getStringState();
+  const isBlackCheck = boardState.isCheckString(stringState, prestine, "black");
   const isBlackCheckmate = boardState.isCheckmateString(
-    board.state,
-    board.prestine,
+    stringState,
+    prestine,
     "black",
     moves
   );
-  const isWhiteCheck = boardState.isCheckString(
-    board.state,
-    board.prestine,
-    "white"
-  );
+  const isWhiteCheck = boardState.isCheckString(stringState, prestine, "white");
   const isWhiteCheckmate = boardState.isCheckmateString(
-    board.state,
-    board.prestine,
+    stringState,
+    prestine,
     "white",
     moves
   );
 
   res.status(201).json({
     _id: board._id,
-    state: board.state,
+    state: stringState,
     moves: moves,
     color: board.color,
     isBlackCheck: isBlackCheck,

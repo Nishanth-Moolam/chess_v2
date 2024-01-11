@@ -139,4 +139,8 @@ export class LobbyComponent implements OnInit {
   isWhite(key: string) {
     return key === key.toUpperCase();
   }
+
+  setPromotionPreference(preference: string) {
+    this.socketService.setPromotionPreference(preference);
+  }
 }

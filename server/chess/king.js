@@ -53,6 +53,53 @@ class King extends Piece {
       }
     }
 
+    // castling
+    if (this.prestine === 0) {
+      if (
+        state[i][j + 1] === null &&
+        state[i][j + 2] === null &&
+        state[i][j + 3] !== null &&
+        state[i][j + 3].prestine === 0
+      ) {
+        moves[JSON.stringify(this.position)].push({
+          endPosition: [i, j + 2],
+          capture: null,
+          translation: [
+            {
+              start: this.position,
+              end: [i, j + 2],
+            },
+            {
+              start: [i, j + 3],
+              end: [i, j + 1],
+            },
+          ],
+        });
+      }
+      if (
+        state[i][j - 1] === null &&
+        state[i][j - 2] === null &&
+        state[i][j - 3] === null &&
+        state[i][j - 4] !== null &&
+        state[i][j - 4].prestine === 0
+      ) {
+        moves[JSON.stringify(this.position)].push({
+          endPosition: [i, j - 2],
+          capture: null,
+          translation: [
+            {
+              start: this.position,
+              end: [i, j - 2],
+            },
+            {
+              start: [i, j - 4],
+              end: [i, j - 1],
+            },
+          ],
+        });
+      }
+    }
+
     return moves;
   }
 

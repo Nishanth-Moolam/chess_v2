@@ -48,6 +48,7 @@ class Pawn extends Piece {
     }
     for (let dj of [-1, 1]) {
       if (j + dj < 0 || j + dj > 7) continue;
+      if (i + direction < 0 || i + direction > 7) continue;
       if (
         state[i + direction][j + dj] &&
         state[i + direction][j + dj].color !== this.color
@@ -64,8 +65,28 @@ class Pawn extends Piece {
         });
       }
     }
-    // TODO: en passant
-    // TODO: promotion
+
+    // en passant
+    for (let dj of [-1, 1]) {
+      if (state[i][j + dj] && state[i][j + dj].type === "pawn") {
+        if (
+          state[i][j + dj].color !== this.color &&
+          state[i][j + dj].prestine === 1
+        ) {
+          moves[JSON.stringify(this.position)].push({
+            endPosition: [i + direction, j + dj],
+            capture: [i, j + dj],
+            translation: [
+              {
+                start: this.position,
+                end: [i + direction, j + dj],
+              },
+            ],
+          });
+        }
+      }
+    }
+
     return moves;
   }
 

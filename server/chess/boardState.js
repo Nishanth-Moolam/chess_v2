@@ -20,10 +20,11 @@ class BoardState {
   }
 
   move(move, promotionPreference) {
+    // TODO: promotion preference must be in model
     this.promotionPreference = promotionPreference;
     this.state = this.propogateMove(this.state, move);
 
-    return this.getStringState(this.state);
+    return this.getStringState();
   }
 
   findAllMoves(state) {
@@ -146,7 +147,29 @@ class BoardState {
       for (let j = 0; j < stringState[i].length; j++) {
         switch (stringState[i][j]) {
           case "p":
-            state[i].push(new Pawn("black", [i, j], +prestine[i][j]));
+            if (i === 0 || i === 7) {
+              console.log(this.promotionPreference);
+              switch (this.promotionPreference) {
+                case "queen":
+                  state[i].push(new Queen("black", [i, j], +prestine[i][j]));
+                  break;
+                case "rook":
+                  state[i].push(new Rook("black", [i, j], +prestine[i][j]));
+                  break;
+                case "knight":
+                  state[i].push(new Knight("black", [i, j], +prestine[i][j]));
+                  break;
+                case "bishop":
+                  state[i].push(new Bishop("black", [i, j], +prestine[i][j]));
+                  break;
+                default:
+                  state[i].push(new Queen("black", [i, j], +prestine[i][j]));
+                  break;
+              }
+
+            } else {
+              state[i].push(new Pawn("black", [i, j], +prestine[i][j]));
+            }
             break;
           case "r":
             state[i].push(new Rook("black", [i, j], +prestine[i][j]));
@@ -164,7 +187,27 @@ class BoardState {
             state[i].push(new King("black", [i, j], +prestine[i][j]));
             break;
           case "P":
-            state[i].push(new Pawn("white", [i, j], +prestine[i][j]));
+            if (i === 0 || i === 7) {
+              switch (this.promotionPreference) {
+                case "queen":
+                  state[i].push(new Queen("white", [i, j], +prestine[i][j]));
+                  break;
+                case "rook":
+                  state[i].push(new Rook("white", [i, j], +prestine[i][j]));
+                  break;
+                case "knight":
+                  state[i].push(new Knight("white", [i, j], +prestine[i][j]));
+                  break;
+                case "bishop":
+                  state[i].push(new Bishop("white", [i, j], +prestine[i][j]));
+                  break;
+                default:
+                  state[i].push(new Queen("white", [i, j], +prestine[i][j]));
+                  break;
+              }
+            } else {
+              state[i].push(new Pawn("white", [i, j], +prestine[i][j]));
+            }
             break;
           case "R":
             state[i].push(new Rook("white", [i, j], +prestine[i][j]));
@@ -190,37 +233,37 @@ class BoardState {
     return state;
   }
 
-  getStringState(state) {
+  getStringState() {
     let stringState = [];
     let prestine = [];
 
-    for (let i = 0; i < state.length; i++) {
+    for (let i = 0; i < this.state.length; i++) {
       stringState.push("");
       prestine.push("");
-      for (let j = 0; j < state[i].length; j++) {
-        if (state[i][j] === null) {
+      for (let j = 0; j < this.state[i].length; j++) {
+        if (this.state[i][j] === null) {
           stringState[i] += ".";
           prestine[i] += ".";
         } else {
-          prestine[i] += state[i][j].prestine.toString();
-          switch (state[i][j].type) {
+          prestine[i] += this.state[i][j].prestine.toString();
+          switch (this.state[i][j].type) {
             case "pawn":
-              stringState[i] += state[i][j].color === "black" ? "p" : "P";
+              stringState[i] += this.state[i][j].color === "black" ? "p" : "P";
               break;
             case "rook":
-              stringState[i] += state[i][j].color === "black" ? "r" : "R";
+              stringState[i] += this.state[i][j].color === "black" ? "r" : "R";
               break;
             case "knight":
-              stringState[i] += state[i][j].color === "black" ? "n" : "N";
+              stringState[i] += this.state[i][j].color === "black" ? "n" : "N";
               break;
             case "bishop":
-              stringState[i] += state[i][j].color === "black" ? "b" : "B";
+              stringState[i] += this.state[i][j].color === "black" ? "b" : "B";
               break;
             case "queen":
-              stringState[i] += state[i][j].color === "black" ? "q" : "Q";
+              stringState[i] += this.state[i][j].color === "black" ? "q" : "Q";
               break;
             case "king":
-              stringState[i] += state[i][j].color === "black" ? "k" : "K";
+              stringState[i] += this.state[i][j].color === "black" ? "k" : "K";
               break;
             default:
               stringState[i] += ".";
