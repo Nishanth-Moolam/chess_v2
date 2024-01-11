@@ -32,6 +32,7 @@ export class LobbyComponent implements OnInit {
 
   ngOnInit() {
     this.lobbyId = this.route.snapshot.paramMap.get('id') || '';
+    localStorage.setItem('lobbyId', this.lobbyId);
     this.socketService.joinLobby();
     this.resetPieceMoves();
     this.socketService.state.subscribe((state: any) => {

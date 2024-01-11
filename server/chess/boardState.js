@@ -75,9 +75,26 @@ class BoardState {
     return newState;
   }
 
-  isCheckString(stringState, color) {
-    let state = this.getState(stringState);
+  isCheckString(stringState, prestine, color) {
+    let state = this.getState(stringState, prestine);
     return this.isCheck(state, color);
+  }
+
+  isCheckmateString(stringState, prestine, color, moves) {
+    if (!this.isCheckString(stringState, prestine, color)) {
+      return false;
+    } else {
+      for (let position in moves) {
+        let [i, j] = JSON.parse(position);
+        [i, j] = [+i, +j];
+        if (this.state[i][j].color === color) {
+          if (moves[position].length > 0) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
   }
 
   isCheck(state, color) {

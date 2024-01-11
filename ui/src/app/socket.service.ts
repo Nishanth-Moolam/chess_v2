@@ -17,28 +17,28 @@ export class SocketService {
   boardColor: BehaviorSubject<string> = new BehaviorSubject<string>('');
   socketId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
+  isBlackCheck: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isBlackCheckmate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+  isWhiteCheck: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isWhiteCheckmate: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
+    false
+  );
+
   constructor(
     private socket: Socket,
     private http: HttpClient,
     private router: Router
-  ) {
-    const lobbyId = localStorage.getItem('lobbyId');
-    if (lobbyId) {
-      this.joinLobby();
-    }
-  }
+  ) {}
 
   joinLobby() {
     console.log('joining lobby');
     this.lobbyId = localStorage.getItem('lobbyId') || '';
     this.socket.emit('join_lobby', this.lobbyId);
     this.socket.on('joined_lobby', (data: any) => {
-      // TODO: set color
-      this.color.next('white');
-
       this.socketId.next(data.socketId);
 
-      // TODO: add http request to join lobby as player
       this.http
         .post(`${this.apiURL}/lobby/join/${this.lobbyId}`, {
           socketId: this.socketId,
@@ -66,10 +66,13 @@ export class SocketService {
         .get(`${this.apiURL}/board/${this.lobbyId}`)
         .subscribe((res: any) => {
           console.log('moved');
-          console.log(res);
           this.state.next(res.state);
           this.moves.next(res.moves);
           this.boardColor.next(res.color || 'white');
+          this.isBlackCheck.next(res.isBlackCheck);
+          this.isBlackCheckmate.next(res.isBlackCheckmate);
+          this.isWhiteCheck.next(res.isWhiteCheck);
+          this.isWhiteCheckmate.next(res.isWhiteCheckmate);
         });
     });
   }
@@ -77,16 +80,15 @@ export class SocketService {
   createLobby() {
     this.http.post(`${this.apiURL}/lobby/create`, {}).subscribe((res) => {
       this.socket.emit('create_lobby', res);
-
       this.socket.on('created_lobby', (data: any) => {
         this.lobbyId = data._id;
         localStorage.setItem('lobbyId', data._id);
-        this.router.navigate(['/lobby', this.lobbyId]);
         this.http
           .post(`${this.apiURL}/board/create/${this.lobbyId}`, {})
           .subscribe((res: any) => {
             this.state.next(res.state);
             this.moves.next(res.moves);
+            this.router.navigate(['/lobby', this.lobbyId]);
           });
       });
     });
@@ -103,7 +105,6 @@ export class SocketService {
         promotionPreference: promotionPreference,
       })
       .subscribe((res) => {
-        console.log(res);
         this.socket.emit('move', {});
       });
   }
@@ -113,8 +114,16 @@ export class SocketService {
     localStorage.removeItem('lobbyId');
     this.socket.emit('leave_lobby', this.lobbyId);
     this.socket.on('left_lobby', (data: any) => {
-      console.log('left lobby');
+      this.http
+        .post(`${this.apiURL}/lobby/leave/${this.lobbyId}`, {
+          socketId: data.socketId,
+        })
+        .subscribe((res) => {
+          // console.log(res);
+        });
     });
+    this.socketId.next('');
     this.router.navigate(['/']);
+    // TODO: reset all BehaviorSubjects
   }
 }

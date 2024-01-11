@@ -77,7 +77,10 @@ io.on("connection", (socket) => {
     lobbyId = data;
     socket.leave(lobbyId);
 
-    socket.emit("left_lobby", data);
+    socket.emit("left_lobby", {
+      socketId: socket.id,
+      lobbyId: lobbyId,
+    });
   });
 
   socket.on("create_lobby", (data) => {
@@ -114,13 +117,12 @@ io.on("connection", (socket) => {
       }
       if (lobby?.black === socket.id) {
         lobby.black = null;
-      } else if (lobby?.white === socket.id) {
+      }
+      if (lobby?.white === socket.id) {
         lobby.white = null;
       }
 
       await lobby.save();
-      console.log("Removed player: " + socket.id);
-      console.log(lobby);
     } catch (err) {
       console.log(err);
     }

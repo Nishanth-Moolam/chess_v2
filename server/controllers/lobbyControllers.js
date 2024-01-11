@@ -17,18 +17,50 @@ const joinLobby = asyncHandler(async (req, res) => {
   const lobby = await Lobby.findById(req.params.lobbyId);
   let joinedAs = "";
 
+  if (
+    lobby.white === req.body.socketId._value ||
+    lobby.black === req.body.socketId._value
+  ) {
+    joinedAs = lobby.white === req.body.socketId._value ? "white" : "black";
+  }
   if (!lobby.white) {
     joinedAs = "white";
     lobby.white = req.body.socketId._value;
-  } else {
+  } else if (!lobby.black) {
     joinedAs = "black";
     lobby.black = req.body.socketId._value;
+  } else {
+    res.status(400);
+    throw new Error("Lobby is full");
   }
 
   const updatedLobby = await lobby.save();
+  // console.log("Updated lobby");
+  // console.log(updatedLobby);
   res.status(201).json({
     color: joinedAs,
   });
 });
 
-module.exports = { createLobby, joinLobby };
+const leaveLobby = asyncHandler(async (req, res) => {
+  const lobby = await Lobby.findById(req.params.lobbyId);
+  let leftAs = "";
+
+  if (lobby.white === req.body.socketId) {
+    leftAs = "white";
+    lobby.white = null;
+  }
+  if (lobby.black === req.body.socketId) {
+    leftAs = "black";
+    lobby.black = null;
+  }
+
+  const updatedLobby = await lobby.save();
+  // console.log("left lobby");
+  // console.log(updatedLobby);
+  res.status(201).json({
+    color: leftAs,
+  });
+});
+
+module.exports = { createLobby, joinLobby, leaveLobby };

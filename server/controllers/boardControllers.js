@@ -88,19 +88,45 @@ const getBoard = asyncHandler(async (req, res) => {
   const board = await Board.findById(lobby.board);
 
   // this causes errors when board takes too long to find
-  // if (!board) {
-  //   res.status(404);
-  //   throw new Error("Board not found");
-  // }
+  if (!board) {
+    res.status(404);
+    throw new Error("Board not found");
+  }
 
   const boardState = new BoardState(board.state, board.prestine);
   const moves = boardState.findMoves();
+  const isBlackCheck = boardState.isCheckString(
+    board.state,
+    board.prestine,
+    "black"
+  );
+  const isBlackCheckmate = boardState.isCheckmateString(
+    board.state,
+    board.prestine,
+    "black",
+    moves
+  );
+  const isWhiteCheck = boardState.isCheckString(
+    board.state,
+    board.prestine,
+    "white"
+  );
+  const isWhiteCheckmate = boardState.isCheckmateString(
+    board.state,
+    board.prestine,
+    "white",
+    moves
+  );
 
   res.status(201).json({
     _id: board._id,
     state: board.state,
     moves: moves,
     color: board.color,
+    isBlackCheck: isBlackCheck,
+    isBlackCheckmate: isBlackCheckmate,
+    isWhiteCheck: isWhiteCheck,
+    isWhiteCheckmate: isWhiteCheckmate,
   });
 });
 
