@@ -29,6 +29,8 @@ class Knight extends Piece {
         if (state[newI][newJ] === null) {
           moves[JSON.stringify(this.position)].push({
             endPosition: [newI, newJ],
+            piece: this.type,
+            color: this.color,
             capture: null,
             translation: [
               {
@@ -40,6 +42,8 @@ class Knight extends Piece {
         } else if (state[newI][newJ].color !== this.color) {
           moves[JSON.stringify(this.position)].push({
             endPosition: [newI, newJ],
+            piece: this.type,
+            color: this.color,
             capture: [newI, newJ],
             translation: [
               {

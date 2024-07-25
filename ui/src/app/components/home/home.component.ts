@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Form } from '@angular/forms';
 import { SocketService } from '../../socket.service';
 import { Router } from '@angular/router';
 @Component({
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
   form!: FormGroup;
+  joinGame!: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -18,14 +19,20 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.socketService.leaveLobby();
-    this.form = this.fb.group({
-      name: '',
+    this.form = this.fb.group({});
+    this.joinGame = this.fb.group({
+      lobbyId: new FormControl(''),
     });
   }
 
   onSubmit() {
-    const name = this.form.value.name;
-    localStorage.setItem('name', name);
+    // const name = this.form.value.name;
+    // localStorage.setItem('name', name);
     this.socketService.createLobby();
+  }
+
+  onJoin() {
+    const lobbyId = this.joinGame.value.lobbyId;
+    this.router.navigate([`/lobby/${lobbyId}`]);
   }
 }

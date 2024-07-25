@@ -1,55 +1,107 @@
+@import '../../../_variables.scss';
+
+
 .chess-cell {
-    position: relative;
-    padding: 0;
+  position: relative;
+  padding: 0;
 }
 
 .chess-cell::before {
-    content: "";
-    display: block;
-    padding-top: 100%;  /* This creates a square */
+  content: "";
+  display: block;
+  padding-top: 100%; /* This creates a square */
 }
 
 .cell-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 .chess-board {
-    padding: 24px;
-
+  padding: 24px;
 }
 
-@media (min-width: 992px) { 
-    .chess-board {
-        max-width: 600px; 
-        margin: 0 auto;
-    }
+@media (min-width: 992px) {
+  .chess-board {
+    max-width: 600px;
+    margin: 0 auto;
+  }
 }
 
 .white {
-    background-color: #f0d9b5;
+  background-color: #f0d9b5;
 }
 
 .black {
-    background-color: #b58863;
+  background-color: #b58863;
 }
 
 .chess-piece {
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* This will keep the aspect ratio of the images */
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* This will keep the aspect ratio of the images */
 }
 
 .circle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 50%;  /* Adjust these values to change the size of the circle */
-    height: 50%;
-    background-color: #ad4242;  /* Change this to the color you want */
-    border-radius: 50%;  /* This makes the div a circle */
-    transform: translate(-50%, -50%);  /* This centers the circle in the square */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%; /* Adjust these values to change the size of the circle */
+  height: 50%;
+  background-color: #ad4242; /* Change this to the color you want */
+  border-radius: 50%; /* This makes the div a circle */
+  transform: translate(-50%, -50%); /* This centers the circle in the square */
+}
+
+.panel {
+  position: absolute;
+  width: 20%;
+  &.left {
+    left: 0;
+    width: 25%;
+    // max-height: 100vh;
+    // overflow-y: auto;
+    .data {
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  }
+  &.right {
+    right: 0;
+  }
+  @media (max-width: 992px) {
+    display: none;
+  }
+}
+
+.data { 
+    border: solid $white;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 12px;
+    // width: 100%;
+
+}
+
+.turn { 
+    height: 100%;
+    &.white {
+        background-color: $grey;
+    }
+    &.black { 
+        background-color: $black;
+    }
+}
+
+.chess-piece-move-list { 
+  width: 40px;
 }

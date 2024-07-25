@@ -1,22 +1,60 @@
-<div class="content" *ngIf="loading === false">
-    <div class="container chess-board">
-        <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">
-            <div 
-            class="col chess-cell" 
-            *ngFor="let j of [0, 1, 2, 3, 4, 5, 6, 7]" 
-            [ngClass]="{'white': (i+j)%2 === 0, 'black': (i+j)%2 === 1}">
-                <div class="cell-content" (click)="displayMoves(i, j)">
-                    <ng-container *ngIf="pieceMoves[i][j]">
-                        <div class="circle"></div>
-                    </ng-container>
-                    <ng-container *ngIf="state[i] && state[i][j] !== '.'">
-                        <img class="chess-piece" src="{{ imageSrc(state[i][j]) }}" alt="piece">
-                    </ng-container>
-                </div>
-            </div>
+<div class="content" *ngIf="loading === false" [ngClass]="{'turn black' : color === 'black', 'turn white': color === 'white'}">
+  <div class="panel left">
+    <div class="data">
+      <h1 class="title">Move List</h1>
+      <div *ngFor="let move of history.reverse()">
+        <div class="data">
+          <div>
+            <img
+              class="chess-piece-move-list"
+              src="{{ moveImageSrc(move.piece, move.color) }}"
+              alt="piece"
+            />
+          </div>
+          <div *ngFor="let translate of move.translation">
+            <div><h3>{{ convertCoordinates(translate.start) }} --> {{ convertCoordinates(translate.end) }}</h3></div>
+          </div>
         </div>
+      </div>
     </div>
-    <p>you are {{ color }}</p>
-    <p>{{ boardColor }}'s turn</p>
-    <button (click)="leaveGame()">Leave Game</button>
+  </div>
+  <div class="panel right">
+    <div class="data">
+        Your Color: {{ color }}
+    </div>
+    <div class="data">
+        it is {{ boardColor }}'s turn
+    </div>
+    <div class="data">
+        <button mat-button (click)="leaveGame()">Leave Game</button>
+    </div>
+    <div>
+      <!-- copy lobby id -->
+      <div class="data">
+        <button mat-button (click)="copyToClipboard()">Copy Lobby ID</button>
+      </div>  
+    </div>
+  </div>
+  <div class="container chess-board">
+    <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">
+      <div
+        class="col chess-cell"
+        *ngFor="let j of [0, 1, 2, 3, 4, 5, 6, 7]"
+        [ngClass]="{ white: (i + j) % 2 === 0, black: (i + j) % 2 === 1 }"
+      >
+        <div class="cell-content" (click)="displayMoves(i, j)">
+          <ng-container *ngIf="pieceMoves[i][j]">
+            <div class="circle"></div>
+          </ng-container>
+          <ng-container *ngIf="state[i] && state[i][j] !== '.'">
+            <img
+              class="chess-piece"
+              src="{{ imageSrc(state[i][j]) }}"
+              alt="piece"
+            />
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

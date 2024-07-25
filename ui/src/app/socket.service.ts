@@ -14,6 +14,7 @@ export class SocketService {
   color: BehaviorSubject<string> = new BehaviorSubject<string>('');
   state: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   moves: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  history: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   boardColor: BehaviorSubject<string> = new BehaviorSubject<string>('');
   socketId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
@@ -52,6 +53,7 @@ export class SocketService {
         .subscribe((res: any) => {
           this.state.next(res.state);
           this.moves.next(res.moves);
+          this.history.next(res.history);
           this.boardColor.next(res.color || 'white');
         });
       console.log('joined lobby');
@@ -68,6 +70,7 @@ export class SocketService {
           console.log('moved');
           this.state.next(res.state);
           this.moves.next(res.moves);
+          this.history.next(res.history);
           this.boardColor.next(res.color || 'white');
           this.isBlackCheck.next(res.isBlackCheck);
           this.isBlackCheckmate.next(res.isBlackCheckmate);
@@ -129,5 +132,9 @@ export class SocketService {
 
   setPromotionPreference(preference: string) {
     this.promotionPreference = preference;
+  }
+
+  getLobbyId() {
+    return this.lobbyId || '';
   }
 }

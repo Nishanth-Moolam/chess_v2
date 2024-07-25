@@ -21,6 +21,10 @@ class Piece {
             endPosition: [i, j],
             // optional capture position of the move
             capture: [i, j],
+            // type of piece
+            piece: this.type,
+            // color of piece
+            color: this.color,
             // list of translations of pieces. Each translation has a start and end position
             // this is to handle castling and en passant
             translation: [

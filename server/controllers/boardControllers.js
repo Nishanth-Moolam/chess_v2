@@ -40,7 +40,7 @@ const createBoard = asyncHandler(async (req, res) => {
   lobby.board = createdBoard._id;
   await lobby.save();
 
-  const boardState = new BoardState(board.state, board.prestine);
+  const boardState = new BoardState(board.state, board.prestine, "queen");
   const moves = boardState.findMoves();
 
   res.status(201).json({
@@ -58,10 +58,15 @@ const updateBoard = asyncHandler(async (req, res) => {
   console.log("-------------------------------------".yellow.bold);
   console.log("Update board");
   console.log(move);
+  console.log("req.body.promotionPreference", req.body.promotionPreference);
 
-  boardState = new BoardState(oldBoard.state, oldBoard.prestine);
+  boardState = new BoardState(
+    oldBoard.state,
+    oldBoard.prestine,
+    req.body.promotionPreference
+  );
 
-  const newBoardState = boardState.move(move, req.body.promotionPreference);
+  const newBoardState = boardState.move(move);
 
   const board = new Board({
     state: newBoardState.stringState,
@@ -116,6 +121,7 @@ const getBoard = asyncHandler(async (req, res) => {
     state: stringState,
     moves: moves,
     color: board.color,
+    history: board.movesHistory,
     isBlackCheck: isBlackCheck,
     isBlackCheckmate: isBlackCheckmate,
     isWhiteCheck: isWhiteCheck,

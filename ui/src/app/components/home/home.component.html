@@ -1,9 +1,27 @@
 <div class="content">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <mat-form-field>
-            <mat-label>Player Name</mat-label>
-            <input matInput formControlName="name">
-        </mat-form-field>
-        <button mat-button type="submit">Submit</button>
-    </form>
+    <div>
+        <!-- title -->
+        <h1 class="title">Chess</h1>
+    </div>
+    <div class="container panel">
+        <div class="row">
+            <div class="col-md-12">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <button class="start-game" mat-button type="submit">Start a Game!</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <form [formGroup]="joinGame" (ngSubmit)="onJoin()">
+                    <mat-form-field>
+                        <mat-label>Game ID</mat-label>
+                        <input matInput formControlName="lobbyId">
+                    </mat-form-field>
+                    <button class="join-game" mat-button type="submit">Join a Game!</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+

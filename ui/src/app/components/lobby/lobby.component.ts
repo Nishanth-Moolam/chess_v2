@@ -17,6 +17,7 @@ export class LobbyComponent implements OnInit {
   boardColor: string = 'white';
   // color of the player
   color: string = '';
+  history: any = [];
 
   // moves that are highlighted on the board
   pieceMoves: any = [];
@@ -47,6 +48,10 @@ export class LobbyComponent implements OnInit {
     });
     this.socketService.color.subscribe((color: string) => {
       this.color = color;
+    });
+    this.socketService.history.subscribe((history: any) => {
+      console.log('history', history);
+      this.history = history;
     });
 
     localStorage.setItem('lobbyId', this.lobbyId);
@@ -128,6 +133,10 @@ export class LobbyComponent implements OnInit {
     }
   }
 
+  moveImageSrc(piece: string, color: string) {
+    return `assets/images/${piece}-${color}.png`;
+  }
+
   leaveGame() {
     this.socketService.leaveLobby();
   }
@@ -142,5 +151,56 @@ export class LobbyComponent implements OnInit {
 
   setPromotionPreference(preference: string) {
     this.socketService.setPromotionPreference(preference);
+  }
+
+  copyToClipboard() {
+    const lobbyId = this.socketService.getLobbyId();
+    const el = document.createElement('textarea');
+    el.value = lobbyId;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  }
+
+  convertCoordinates(position: number[]) {
+    const res = ['a', '1'];
+    if (position[1] == 7) {
+      res[0] = 'h';
+    } else if (position[1] == 6) {
+      res[0] = 'g';
+    } else if (position[1] == 5) {
+      res[0] = 'f';
+    } else if (position[1] == 4) {
+      res[0] = 'e';
+    } else if (position[1] == 3) {
+      res[0] = 'd';
+    } else if (position[1] == 2) {
+      res[0] = 'c';
+    } else if (position[1] == 1) {
+      res[0] = 'b';
+    } else if (position[1] == 0) {
+      res[0] = 'a';
+    }
+
+    if (position[0] == 0) {
+      res[1] = '8';
+    } else if (position[0] == 1) {
+      res[1] = '7';
+    } else if (position[0] == 2) {
+      res[1] = '6';
+    } else if (position[0] == 3) {
+      res[1] = '5';
+    } else if (position[0] == 4) {
+      res[1] = '4';
+    } else if (position[0] == 5) {
+      res[1] = '3';
+    } else if (position[0] == 6) {
+      res[1] = '2';
+    } else if (position[0] == 7) {
+      res[1] = '1';
+    }
+
+    return res.join('');
   }
 }

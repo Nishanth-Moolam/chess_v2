@@ -20,6 +20,8 @@ class Pawn extends Piece {
     ) {
       moves[JSON.stringify(this.position)].push({
         endPosition: [i + direction, j],
+        piece: this.type,
+        color: this.color,
         capture: null,
         translation: [
           {
@@ -37,6 +39,8 @@ class Pawn extends Piece {
     ) {
       moves[JSON.stringify(this.position)].push({
         endPosition: [i + 2 * direction, j],
+        piece: this.type,
+        color: this.color,
         capture: null,
         translation: [
           {
@@ -55,6 +59,8 @@ class Pawn extends Piece {
       ) {
         moves[JSON.stringify(this.position)].push({
           endPosition: [i + direction, j + dj],
+          piece: this.type,
+          color: this.color,
           capture: [i + direction, j + dj],
           translation: [
             {
@@ -75,6 +81,8 @@ class Pawn extends Piece {
         ) {
           moves[JSON.stringify(this.position)].push({
             endPosition: [i + direction, j + dj],
+            piece: this.type,
+            color: this.color,
             capture: [i, j + dj],
             translation: [
               {

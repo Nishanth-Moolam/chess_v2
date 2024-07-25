@@ -30,6 +30,8 @@ class King extends Piece {
         if (state[newI][newJ] === null) {
           moves[JSON.stringify(this.position)].push({
             endPosition: [newI, newJ],
+            piece: this.type,
+            color: this.color,
             capture: null,
             translation: [
               {
@@ -41,6 +43,8 @@ class King extends Piece {
         } else if (state[newI][newJ].color !== this.color) {
           moves[JSON.stringify(this.position)].push({
             endPosition: [newI, newJ],
+            piece: this.type,
+            color: this.color,
             capture: [newI, newJ],
             translation: [
               {
@@ -63,6 +67,8 @@ class King extends Piece {
       ) {
         moves[JSON.stringify(this.position)].push({
           endPosition: [i, j + 2],
+          piece: this.type,
+          color: this.color,
           capture: null,
           translation: [
             {
@@ -85,6 +91,8 @@ class King extends Piece {
       ) {
         moves[JSON.stringify(this.position)].push({
           endPosition: [i, j - 2],
+          piece: this.type,
+          color: this.color,
           capture: null,
           translation: [
             {

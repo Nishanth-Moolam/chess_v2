@@ -7,9 +7,10 @@ const Queen = require("./queen");
 const _ = require("lodash");
 
 class BoardState {
-  constructor(stringState, prestine) {
+  constructor(stringState, prestine, promotionPreference) {
+    console.log("boardState promotionPreference", promotionPreference);
+    this.promotionPreference = promotionPreference;
     this.state = this.getState(stringState, prestine);
-    this.promotionPreference = "queen";
   }
 
   findMoves() {
@@ -19,9 +20,9 @@ class BoardState {
     return validatedMoves;
   }
 
-  move(move, promotionPreference) {
+  move(move) {
     // TODO: promotion preference must be in model
-    this.promotionPreference = promotionPreference;
+    // this.promotionPreference = promotionPreference;
     this.state = this.propogateMove(this.state, move);
 
     return this.getStringState();
@@ -166,7 +167,6 @@ class BoardState {
                   state[i].push(new Queen("black", [i, j], +prestine[i][j]));
                   break;
               }
-
             } else {
               state[i].push(new Pawn("black", [i, j], +prestine[i][j]));
             }
