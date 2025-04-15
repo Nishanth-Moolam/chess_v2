@@ -19,6 +19,12 @@ export class LobbyComponent implements OnInit {
   color: string = '';
   history: any = [];
 
+  //checks and checkmates
+  isBlackCheck: boolean = false;
+  isBlackCheckmate: boolean = false;
+  isWhiteCheck: boolean = false;
+  isWhiteCheckmate: boolean = false;
+
   // moves that are highlighted on the board
   pieceMoves: any = [];
   // whether or not to display the highlighted moves
@@ -50,9 +56,26 @@ export class LobbyComponent implements OnInit {
       this.color = color;
     });
     this.socketService.history.subscribe((history: any) => {
-      console.log('history', history);
       this.history = history;
     });
+    this.socketService.isBlackCheck.subscribe((isBlackCheck: boolean) => {
+      this.isBlackCheck = isBlackCheck;
+    });
+    this.socketService.isBlackCheckmate.subscribe(
+      (isBlackCheckmate: boolean) => {
+        this.isBlackCheckmate = isBlackCheckmate;
+        console.log('isBlackCheckmate', isBlackCheckmate);
+      }
+    );
+    this.socketService.isWhiteCheck.subscribe((isWhiteCheck: boolean) => {
+      this.isWhiteCheck = isWhiteCheck;
+    });
+    this.socketService.isWhiteCheckmate.subscribe(
+      (isWhiteCheckmate: boolean) => {
+        this.isWhiteCheckmate = isWhiteCheckmate;
+        console.log('isWhiteCheckmate', isWhiteCheckmate);
+      }
+    );
 
     localStorage.setItem('lobbyId', this.lobbyId);
   }

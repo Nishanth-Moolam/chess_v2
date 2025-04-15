@@ -34,6 +34,14 @@
         <button mat-button (click)="copyToClipboard()">Copy Lobby ID</button>
       </div>  
     </div>
+    <div *ngIf="isBlackCheckmate" class="data">
+      <h1 class="title">Checkmate!</h1>
+      <h2>White wins!</h2>
+    </div>
+    <div *ngIf="isWhiteCheckmate" class="data">
+      <h1 class="title">Checkmate!</h1>
+      <h2>Black wins!</h2>
+    </div>
   </div>
   <div class="container chess-board">
     <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">

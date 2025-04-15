@@ -91,6 +91,10 @@ export class SocketService {
           .subscribe((res: any) => {
             this.state.next(res.state);
             this.moves.next(res.moves);
+            this.isBlackCheck.next(false);
+            this.isBlackCheckmate.next(false);
+            this.isWhiteCheck.next(false);
+            this.isWhiteCheckmate.next(false);
             this.router.navigate(['/lobby', this.lobbyId]);
           });
       });
