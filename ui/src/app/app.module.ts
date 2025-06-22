@@ -14,7 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LobbyComponent } from './components/lobby/lobby.component';
 
-const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:5001', options: {} };
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, LobbyComponent],

@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class SocketService {
   lobbyId: string = '';
-  apiURL: string = 'http://localhost:5000/api';
+  apiURL: string = 'http://localhost:5001/api';
   promotionPreference: string = 'knight';
   color: BehaviorSubject<string> = new BehaviorSubject<string>('');
   state: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
@@ -55,6 +55,10 @@ export class SocketService {
           this.moves.next(res.moves);
           this.history.next(res.history);
           this.boardColor.next(res.color || 'white');
+          this.isBlackCheck.next(res.isBlackCheck || false); // Update check state
+          this.isWhiteCheck.next(res.isWhiteCheck || false); // Update check state
+          this.isBlackCheckmate.next(res.isBlackCheckmate || false); // Update checkmate state
+          this.isWhiteCheckmate.next(res.isWhiteCheckmate || false); // Update checkmate state
         });
       console.log('joined lobby');
     });

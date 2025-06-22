@@ -60,6 +60,7 @@ export class LobbyComponent implements OnInit {
     });
     this.socketService.isBlackCheck.subscribe((isBlackCheck: boolean) => {
       this.isBlackCheck = isBlackCheck;
+      console.log('isBlackCheck', isBlackCheck);
     });
     this.socketService.isBlackCheckmate.subscribe(
       (isBlackCheckmate: boolean) => {
@@ -69,6 +70,7 @@ export class LobbyComponent implements OnInit {
     );
     this.socketService.isWhiteCheck.subscribe((isWhiteCheck: boolean) => {
       this.isWhiteCheck = isWhiteCheck;
+      console.log('isWhiteCheck', isWhiteCheck);
     });
     this.socketService.isWhiteCheckmate.subscribe(
       (isWhiteCheckmate: boolean) => {

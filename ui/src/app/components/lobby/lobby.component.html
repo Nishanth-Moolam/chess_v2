@@ -1,4 +1,27 @@
 <div class="content" *ngIf="loading === false" [ngClass]="{'turn black' : color === 'black', 'turn white': color === 'white'}">
+  <div class="container chess-board">
+    <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">
+      <div
+        class="col chess-cell"
+        *ngFor="let j of [0, 1, 2, 3, 4, 5, 6, 7]"
+        [ngClass]="{ white: (i + j) % 2 === 0, black: (i + j) % 2 === 1 }"
+      >
+        <div class="cell-content" (click)="displayMoves(i, j)">
+          <ng-container *ngIf="pieceMoves[i][j]">
+            <div class="circle"></div>
+          </ng-container>
+          <ng-container *ngIf="state[i] && state[i][j] !== '.'">
+            <img
+              class="chess-piece"
+              draggable="false"
+              src="{{ imageSrc(state[i][j]) }}"
+              alt="piece"
+            />
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="panel left">
     <div class="data">
       <h1 class="title">Move List</h1>
@@ -12,7 +35,11 @@
             />
           </div>
           <div *ngFor="let translate of move.translation">
-            <div><h3>{{ convertCoordinates(translate.start) }} --> {{ convertCoordinates(translate.end) }}</h3></div>
+            <div class="move-description">
+              <span class="start">{{ convertCoordinates(translate.start) }}</span>
+              <span class="arrow">→</span>
+              <span class="end">{{ convertCoordinates(translate.end) }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -31,8 +58,13 @@
     <div>
       <!-- copy lobby id -->
       <div class="data">
-        <button mat-button (click)="copyToClipboard()">Copy Lobby ID</button>
+        <button mat-button (click)="copyToClipboard()">Copy Lobby ID (Invite Player)</button>
       </div>  
+    </div>
+    <!-- Check warning panel -->
+    <div *ngIf="(isBlackCheck || isWhiteCheck) && !isBlackCheckmate && !isWhiteCheckmate" class="data check-panel">
+      <h2 *ngIf="isBlackCheck">Warning: Black is in check!</h2>
+      <h2 *ngIf="isWhiteCheck">Warning: White is in check!</h2>
     </div>
     <div *ngIf="isBlackCheckmate" class="data">
       <h1 class="title">Checkmate!</h1>
@@ -41,28 +73,6 @@
     <div *ngIf="isWhiteCheckmate" class="data">
       <h1 class="title">Checkmate!</h1>
       <h2>Black wins!</h2>
-    </div>
-  </div>
-  <div class="container chess-board">
-    <div class="row" *ngFor="let i of [0, 1, 2, 3, 4, 5, 6, 7]">
-      <div
-        class="col chess-cell"
-        *ngFor="let j of [0, 1, 2, 3, 4, 5, 6, 7]"
-        [ngClass]="{ white: (i + j) % 2 === 0, black: (i + j) % 2 === 1 }"
-      >
-        <div class="cell-content" (click)="displayMoves(i, j)">
-          <ng-container *ngIf="pieceMoves[i][j]">
-            <div class="circle"></div>
-          </ng-container>
-          <ng-container *ngIf="state[i] && state[i][j] !== '.'">
-            <img
-              class="chess-piece"
-              src="{{ imageSrc(state[i][j]) }}"
-              alt="piece"
-            />
-          </ng-container>
-        </div>
-      </div>
     </div>
   </div>
 </div>
